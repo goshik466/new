@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="style.css" rel="stylesheet" />
+    <title>Игра на скорость печать</title>
+  </head>
+
+  <style>
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  padding: 0;
+  background: #262244;
+}
+.settings {
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  background: #0e0d12;
+  color: #ede2c7;
+}
+.container {
+  width: 300px;
+  margin: 0 auto;
+  background: #847aae;
+  padding: 15px;
+}
+.container-title {
+  background: #0e0d12;
+  color: #ede2c7;
+  text-align: center;
+}
+.time-container {
+  display: flex;
+  justify-content: space-between;
+  color: #ede2c7;
+}
+.title {
+  color: #0e0d12;
+  text-align: center;
+}
+#text {
+  width: 100%;
+  padding: 5px;
+}
+
+
+  </style>
+  <body>
+    <div class="settings">
+      <form id="settings-form">
+        <label for="difficulty">Уровень игры</label>
+        <select id="difficulty">
+          <option value="easy">Легко</option>
+          <option value="middle">Средне</option>
+          <option value="hard">Сложно</option>
+        </select>
+      </form>
+    </div>
+
+    <div class="container">
+      <h2 class="container-title">Игра на скорость печати</h2>
+      <div class="time-container">
+        <div class="time-left">Time left: <span id="time">10s</span></div>
+        <div class="score-container">Score: <span id="score">0</span></div>
+      </div>
+
+      <div class="title">Напишите слово:</div>
+      <h1 id="word"></h1>
+      <input
+        type="text"
+        id="text"
+        autocomplete="off"
+        placeholder="Напишите слово"
+      />
+
+      <div class="end-game" id="end-game"></div>
+    </div>
+
+    <script>
+const world = document.getElementById("word");
+const text = document.getElementById("text");
+const scoreEl = document.getElementById("score");
+const timeEl = document.getElementById("time");
+const endgameEl = document.getElementById("end-game");
+const settingsForm = document.getElementById("settings-form");
+let difficultySelect = document.getElementById("difficulty")
+const words = [
+  "apple",
+  "home",
+  "earth",
+  "difficult",
+  "element",
+  "transparent",
+  "inclusion",
+  "cat",
+  "parrot",
+  "coding",
+  "robot",
+  "programm"
+];
+let randomWord;
+let score = 0;
+let time = 10;
+let difficulty = localStorage.getItem('difficulty') !== null
+? localStorage.getItem('difficulty')
+: "medium";
+
+difficultySelect.value =
+localStorage.getItem('difficulty') !== null
+? localStorage.getItem('difficulty')
+: "medium";
+text.focus();
+
+const timeInterval = setInterval(updateTime, 1000);
+
+function updateTime() {
+  time--;
+  timeEl.innerHTML = time + "s";
+  if (time === 0) {
+    clearInterval(timeInterval);
+    gameOver();
+  }
+}
+
+function gameOver() {
+  endgameEl.innerHTML = `
+    <h1>Время законсилось</h1>
+    <p>Ваш счет ${score}</p>
+    <button onclick="location.reload()">Обновить</button>
+  `;
+}
+
+function getRandomWord() {
+  return words[Math.floor(Math.random() * words.length)];
+}
+
+function addWordToDOM() {
+  randomWord = getRandomWord();
+  world.innerHTML = randomWord;
+}
+function updateScore() {
+  score++;
+  scoreEl.innerHTML = score;
+}
+addWordToDOM();
+
+text.addEventListener("input", e => {
+  const insertedText = e.target.value;
+  if (insertedText === randomWord) {
+    addWordToDOM();
+    updateScore();
+    e.target.value = "";
+    time += 4;
+    updateTime();
+    e.target.value = "";
+    console.log("difficulty", difficulty)
+if(difficulty === "hard"){
+  time += 2
+}
+else if(difficulty === "middle"){
+  time += 4
+}
+else{
+  time += 6
+}
+updateTime();
+
+
+  }
+});
+settingsForm.addEventListener("change", e =>{
+
+difficulty = e.target.value
+console.log(difficulty) 
+localStorage.setItem("difficulty", difficulty)
+
+
+
+
+})
+
+    </script>
+  </body>
+</html>

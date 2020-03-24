@@ -6,14 +6,20 @@
 body{
     background-color: blueviolet;
 }
-
+p{
+    position:absolute;
+}
 </style>
 <body>
 <p>hello</p>
 
 </body>
 <script>
-alert("hello")
+
+    setTimeout(function(){
+        document.getElementsByName("p").style.left = (document.getElementsByName("p").style.left = "0%") ? "30%" : "0%"
+    }, 2000)
+
 
 </script>
 
